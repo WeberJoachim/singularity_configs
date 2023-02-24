@@ -1,0 +1,61 @@
+# Config file to use the flepseq scripts
+Bootstrap: docker
+From: staphb/minimap2:latest
+Stage: minimap2
+
+From: staphb/samtools:latest
+Stage: samtools
+
+From: ncbi/blast:latest
+Stage: blast
+
+From: python:3.12.0a5-bullseye
+Stage: python
+
+%post
+    pip install numpy
+    pip install pandas
+    pip install pysam
+    pip install ont_fast5_api
+    pip install matplotlib
+    pip install joblib
+    pip install click
+
+
+From: r-base:latest
+Stage: R-base
+
+%post
+    R -e "install.packages("tidyverse", dependencies = TRUE, repos = 'http://cran.rstudio.com/')"
+    R -e "install.packages("optparse", dependencies = TRUE, repos = 'http://cran.rstudio.com/')"
+
+
+
+
+
+#install binarys into final image
+Bootstrap: docker
+From debian:bullseye
+Stage: final
+
+
+%files from minimap2
+    /root/minimap2 /bin/minimap2
+
+%files from samtools   
+    /root/samtools /bin/samtools
+
+%files from blast
+    /root/blast /bin/blast
+
+%files from python 
+    /root/python /bin/python
+
+%files from R-base
+    /root/R-base /bin/R-base
+
+#labels
+%labels
+AUTHOR Joachim Weber, joachimweber94@gmail.com
+
+
